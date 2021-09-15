@@ -18,25 +18,38 @@ using std::endl;
 using std::string;
 
 /* word class */
-word::word() {}
-word::word(string foo) : _text(foo) {}
+word::word() { _alt_text.push_back(""); }
+word::word(string foo) : word() { _text = foo; }
 string word::text() { return _text; }
 void word::set_text(string new_text) { _text.assign(new_text); }
-string word::alt_text() { return _alt_text; }
-void word::set_alt_text(string new_text) { _alt_text.assign(new_text); }
+std::vector<string> word::alt_text() { return _alt_text; }
+string word::alt_text(int i) { return _alt_text[i]; }
+int word::add_alt_text(string new_text) {
+    if (_alt_text.size() == 1 && _alt_text[0].compare("") == 0) {
+        // replace empty string with initial alt text
+        _alt_text[0].assign(new_text);
+    } else {
+        _alt_text.push_back(new_text);
+    }
+    return _alt_text.size();
+}
 bool word::compare(word other_word) {
     if (other_word.code == code) {
-        if (other_word.text() == text() ||
-                other_word.text() == alt_text()) {
-            return true;
+        if (other_word.text() == text()) { return true; }
+        for (int i = 0; i < _alt_text.size(); i++) {
+            if (other_word.text().compare(_alt_text[i]) == 0) {
+                return true;
+            }
         }
     }
     return false;
 }
-bool word::compare(string other_word) {
-    if (other_word.compare(text()) == 0 ||
-            other_word.compare(alt_text()) == 0) {
-        return true;
+bool word::compare(string str) {
+    if (str.compare(text()) == 0) { return true; }
+    for (int i = 0; i < _alt_text.size(); i++) {
+        if (str.compare(_alt_text[i]) == 0) {
+            return true;
+        }
     }
     return false;
 }
@@ -54,7 +67,7 @@ bool word::is_dir(word *dirs) {
 string noun::description() { return _description; }
 void noun::set_description(string new_text) { _description.assign(new_text);}
 int noun::location() { return _location; }
-bool noun::moveTo(int roomId) {
+bool noun::move_to(int roomId) {
     _location = roomId;
     if (_ilocation == NONE) {
         _ilocation = roomId;
@@ -344,7 +357,7 @@ bool action_get(word word_1, int current_room, room *rooms, noun *nouns) {
     if (word_1.is_noun && nouns[word_1.code].can_get &&
             nouns[word_1.code].location() != POCKET) {
         cout << "Got " << nouns[word_1.code].text() << endl;
-        nouns[word_1.code].moveTo(POCKET);
+        nouns[word_1.code].move_to(POCKET);
         return true;
     } else if (word_1.is_noun && nouns[word_1.code].can_get == false) {
         cout << "I can't pick up " << nouns[word_1.code].text() << endl;
@@ -360,7 +373,7 @@ bool action_drop(word word_1, int current_room, room *rooms, noun *nouns) {
     if (word_1.is_noun && nouns[word_1.code].can_get &&
             nouns[word_1.code].location() == POCKET) {
         cout << "Dropped " << nouns[word_1.code].text() << endl;
-        nouns[word_1.code].moveTo(current_room);
+        nouns[word_1.code].move_to(current_room);
         return true;
     } else if (word_1.is_noun && nouns[word_1.code].can_get == false) {
         cout << "I can't pick that up in the first place" << endl;
@@ -371,3 +384,14 @@ bool action_drop(word word_1, int current_room, room *rooms, noun *nouns) {
     }
     return false;
 }
+
+bool action_cut(){ return true; }
+bool action_clean(){ return true; }
+bool action_watch(){ return true; }
+bool action_run(){ return true; }
+bool action_walk(){ return true; }
+bool action_wait(){ return true; }
+bool action_eat(){ return true; }
+bool action_search(){ return true; }
+bool action_jump(){ return true; }
+bool action_stab(){ return true; }

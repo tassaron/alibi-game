@@ -3,30 +3,17 @@
  * Written by Brianna Rainey (tassaron)
  * Created 2018-04-01
  */
+#include <vector>
+#include "game_defs.h"
+
 using std::string;
 
 const int NONE = -1;
-const int TOTAL_ROOMS = 5;
-const int TOTAL_DIRS = 4;
-const int TOTAL_VERBS = 10;
-const int TOTAL_NOUNS = 4;
-enum Directions { NORTH, SOUTH, EAST, WEST };
-enum Verbs {
-    QUIT, LOOK, INV, GO, HELP, OPEN, CLOSE, GET, DROP, WHERE
-};
-enum Nouns {
-    PIE, BAKERY_FRONT_DOOR, KNIFE, FLOUR
-};
-enum Rooms {
-    POCKET, ENTRYPOINT,
-    BAKERY_FRONT, BAKERY_BACK,
-    OUTSIDE_0
-};
 
 class word {
     protected:
         string _text = "";
-        string _alt_text = "";
+        std::vector<string> _alt_text;
 
     public:
         int code = NONE;
@@ -38,8 +25,9 @@ class word {
         //properties
         string text();
         void set_text(string new_text);
-        string alt_text();
-        void set_alt_text(string new_text);
+        std::vector<string> alt_text();
+        string alt_text(int);
+        int add_alt_text(string new_text);
 
         bool compare(word other_word);
 
@@ -57,6 +45,7 @@ class noun: public word {
     public:
         bool is_noun = true;
         bool can_get = false;
+        bool can_eat = false;
         bool can_open = false;
         bool is_open = false;
         bool no_article = false;
@@ -66,7 +55,7 @@ class noun: public word {
         string description();
         void set_description(string new_text);
         int location();
-        bool moveTo(int roomId);
+        bool move_to(int roomId);
 };
 
 class room {
@@ -78,7 +67,6 @@ class room {
         int exits[4] = { NONE, NONE, NONE, NONE };
         int doors[4] = { NONE, NONE, NONE, NONE };
         bool visited = false;
-
 
         string description();
         void set_description(string new_text);
@@ -105,3 +93,13 @@ bool action_close(word word_1, int current_room, room *rooms, noun *nouns);
 bool action_open(word word_1, int current_room, room *rooms, noun *nouns);
 bool action_get(word word_1, int current_room, room *rooms, noun *nouns);
 bool action_drop(word word_1, int current_room, room *rooms, noun *nouns);
+bool action_cut();
+bool action_clean();
+bool action_watch();
+bool action_run();
+bool action_walk();
+bool action_wait();
+bool action_eat();
+bool action_search();
+bool action_jump();
+bool action_stab();
