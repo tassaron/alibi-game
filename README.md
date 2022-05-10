@@ -5,9 +5,16 @@ An interactive fiction in which you're accused of a crime and have to devise an 
 I uploaded this because I haven't touched it in a while. The game isn't finished, but I kept the scope small to make it completable so I'll definitely finish it soon!
 
 # Installation
-1. `./configure`
-2. `make`
-3. `make install`
+1. Install `gcc`, `aclocal`, `autoconf`, `automake`
+1. Run `autogen.sh` to create the configure script
+1. Run `./configure` to create the makefile
+1. Run `make` to create the `alibi-game` binary (the game itself)
+1. _Optional:_ Run `make install` (to put `alibi-game` in $PATH so you can run it from anywhere)
+
+# Development
+* If you have files leftover from a previous invokation of `autogen.sh`:
+  * Use `autogen.sh clean` to delete build files before regenerating
+  * Use `autogen.sh clean-only` to _just_ clean leftover files without regenerating
 
 # Questions
 ## Why not make this game with Inform or TADS?
